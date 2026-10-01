@@ -58,6 +58,15 @@ def load_inventory():
     except FileNotFoundError:
         return 0, []
 
+
+def save_inventory(total, history):
+    """Save the final inventory total and transaction history to the inventory file."""
+    with open(INVENTORY_FILE, "w") as file:
+        file.write(f"{total}\n")
+        for entry in history:
+            file.write(f"{entry}\n")
+
+
 inventory, transaction_history = load_inventory()
 deliveries_processed = 0
 failed_entries = 0
@@ -66,6 +75,8 @@ while True:
     result = get_valid_input()
 
     if result == "quit":
+        save_inventory(inventory, transaction_history)
+        print(f"\nTransaction history: {transaction_history}")
         break
 
     if result is None:
@@ -78,6 +89,5 @@ while True:
     deliveries_processed += 1
 
     print(f"Stock accepted. Delivery tax: {tax:.2f} | Current inventory: {inventory}")
-    print(f"[DEBUG] Transaction history this session: {transaction_history}")
 
 generate_report(inventory, deliveries_processed, failed_entries)
