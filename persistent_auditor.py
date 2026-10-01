@@ -58,7 +58,7 @@ def load_inventory():
     except FileNotFoundError:
         return 0, []
 
-inventory = 0
+inventory, transaction_history = load_inventory()
 deliveries_processed = 0
 failed_entries = 0
 
@@ -73,9 +73,11 @@ while True:
         continue
 
     inventory = process_delivery(inventory, result)
+    transaction_history.append(result)
     tax = calculate_tax(result)
     deliveries_processed += 1
 
     print(f"Stock accepted. Delivery tax: {tax:.2f} | Current inventory: {inventory}")
+    print(f"[DEBUG] Transaction history this session: {transaction_history}")
 
 generate_report(inventory, deliveries_processed, failed_entries)
