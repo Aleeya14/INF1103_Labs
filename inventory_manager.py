@@ -1,12 +1,26 @@
+import json
+import os
 from datetime import datetime
 
-inventory = [
-    {"id": "P001", "name": "Laptop", "price": 1200.00, "stock": 15},
-    {"id": "P002", "name": "Mouse", "price": 25.50, "stock": 40},
-    {"id": "P003", "name": "Keyboard", "price": 45.00, "stock": 25},
-]
-transactions = [] 
+FILENAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inventory.json")
 
+def load_inventory(filename=FILENAME):
+    """Load inventory and transaction history from JSON if the file exists."""
+    print("DEBUG looking for:", filename)
+    if os.path.exists(filename):
+        print("inventory.json found.")
+        try:
+            with open(filename, "r", encoding="utf-8-sig") as f:
+                data = json.load(f)
+            print("DEBUG data:", data)
+            print("Inventory loaded successfully.")
+            return data.get("products", []), data.get("transactions", [])
+        except (json.JSONDecodeError, OSError) as e:
+            print("DEBUG error:", e)
+            print("Error reading file. Starting with empty inventory.")
+    else:
+        print("inventory.json not found. Starting with empty inventory.")
+    return [], []
 
 def record_transaction(transactions, kind, product_id, amount):
     """Store every transaction amount (history, not just a running total)."""
@@ -17,13 +31,11 @@ def record_transaction(transactions, kind, product_id, amount):
         "timestamp": datetime.now().isoformat(timespec="seconds"),
     })
 
-
 def find_product(inventory, product_id):
     for product in inventory:
         if product["id"].lower() == product_id.lower():
             return product
     return None
-
 
 def read_number(prompt, cast):
     while True:
@@ -36,6 +48,7 @@ def read_number(prompt, cast):
         except ValueError:
             print("Invalid input. Please enter a valid number.")
 
+# ---------- Core functions ----------
 def add_product(inventory, transactions):
     print("\nAdd New Product")
     product_id = input("Product ID: ").strip()
@@ -48,7 +61,6 @@ def add_product(inventory, transactions):
     inventory.append({"id": product_id, "name": name, "price": price, "stock": stock})
     record_transaction(transactions, "add", product_id, price * stock)
     print("\nProduct added successfully!")
-
 
 def update_stock(inventory, transactions):
     print("\nUpdate Stock")
@@ -63,7 +75,6 @@ def update_stock(inventory, transactions):
     record_transaction(transactions, "update", product["id"], change * product["price"])
     print("\nStock updated successfully!")
 
-
 def search_product(inventory):
     print("\nSearch Product")
     product = find_product(inventory, input("Enter Product ID: ").strip())
@@ -75,7 +86,6 @@ def search_product(inventory):
     print(f"ID: {product['id']}\nName: {product['name']}\n"
           f"Price: ${product['price']:.2f}\nStock: {product['stock']}")
     print("-" * 48)
-
 
 def display_all(inventory):
     print("\nCurrent Inventory")
@@ -96,11 +106,11 @@ def show_menu():
     print("5. Exit")
     print("----------------------------")
 
-
 def main():
     print("=" * 42)
-    print("INVENTORY MANAGEMENT SYSTEM (Phase 1)")
+    print("INVENTORY MANAGEMENT SYSTEM (Phase 2)")
     print("=" * 42)
+    inventory, transactions = load_inventory()
     while True:
         show_menu()
         choice = input("\nEnter option: ").strip()
@@ -117,7 +127,6 @@ def main():
             break
         else:
             print("Invalid option. Please choose 1-5.")
-
 
 if __name__ == "__main__":
     main()
