@@ -6,21 +6,29 @@ FILENAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inventory.j
 
 def load_inventory(filename=FILENAME):
     """Load inventory and transaction history from JSON if the file exists."""
-    print("DEBUG looking for:", filename)
     if os.path.exists(filename):
-        print("inventory.json found.")
+        print(f"{os.path.basename(filename)} found.")
         try:
-            with open(filename, "r", encoding="utf-8-sig") as f:
+            with open(filename, "r") as f:
                 data = json.load(f)
-            print("DEBUG data:", data)
             print("Inventory loaded successfully.")
             return data.get("products", []), data.get("transactions", [])
-        except (json.JSONDecodeError, OSError) as e:
-            print("DEBUG error:", e)
+        except (json.JSONDecodeError, OSError):
             print("Error reading file. Starting with empty inventory.")
     else:
-        print("inventory.json not found. Starting with empty inventory.")
+        print(f"{os.path.basename(filename)} not found. Starting with empty inventory.")
     return [], []
+
+def save_inventory(inventory, transactions, filename=FILENAME):
+    """Save inventory and transaction history to JSON."""
+    try:
+        os.makedirs(os.path.dirname(filename) or ".", exist_ok=True)
+        with open(filename, "w") as f:
+            json.dump({"products": inventory, "transactions": transactions}, f, indent=4)
+        return True
+    except OSError as e:
+        print(f"Error saving inventory: {e}")
+        return False
 
 def record_transaction(transactions, kind, product_id, amount):
     """Store every transaction amount (history, not just a running total)."""
@@ -48,7 +56,6 @@ def read_number(prompt, cast):
         except ValueError:
             print("Invalid input. Please enter a valid number.")
 
-# ---------- Core functions ----------
 def add_product(inventory, transactions):
     print("\nAdd New Product")
     product_id = input("Product ID: ").strip()
@@ -103,14 +110,16 @@ def show_menu():
     print("2. Add Product")
     print("3. Update Stock")
     print("4. Search Product")
-    print("5. Exit")
+    print("5. Save Inventory")
+    print("6. Exit")
     print("----------------------------")
 
 def main():
     print("=" * 42)
-    print("INVENTORY MANAGEMENT SYSTEM (Phase 2)")
-    print("=" * 42)
+    print("INVENTORY MANAGEMENT SYSTEM")
+    print("=" * 42 + "\n")
     inventory, transactions = load_inventory()
+ 
     while True:
         show_menu()
         choice = input("\nEnter option: ").strip()
@@ -123,10 +132,18 @@ def main():
         elif choice == "4":
             search_product(inventory)
         elif choice == "5":
-            print("\nProgram terminated.")
+            print("\nSaving inventory...")
+            if save_inventory(inventory, transactions):
+                print(f"Inventory saved successfully to {os.path.basename(FILENAME)}.")
+        elif choice == "6":
+            print("\nSaving inventory before exit...")
+            if save_inventory(inventory, transactions):
+                print("Inventory saved successfully.")
+            print("\nThank you for using Inventory Management System.")
+            print("Program terminated.")
             break
         else:
-            print("Invalid option. Please choose 1-5.")
+            print("Invalid option. Please choose 1-6.")
 
 if __name__ == "__main__":
     main()
