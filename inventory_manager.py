@@ -1,12 +1,13 @@
 from datetime import datetime
- 
+
 inventory = [
     {"id": "P001", "name": "Laptop", "price": 1200.00, "stock": 15},
     {"id": "P002", "name": "Mouse", "price": 25.50, "stock": 40},
     {"id": "P003", "name": "Keyboard", "price": 45.00, "stock": 25},
 ]
 transactions = [] 
- 
+
+
 def record_transaction(transactions, kind, product_id, amount):
     """Store every transaction amount (history, not just a running total)."""
     transactions.append({
@@ -15,15 +16,15 @@ def record_transaction(transactions, kind, product_id, amount):
         "amount": round(amount, 2),
         "timestamp": datetime.now().isoformat(timespec="seconds"),
     })
- 
- 
+
+
 def find_product(inventory, product_id):
     for product in inventory:
         if product["id"].lower() == product_id.lower():
             return product
     return None
- 
- 
+
+
 def read_number(prompt, cast):
     while True:
         try:
@@ -34,8 +35,7 @@ def read_number(prompt, cast):
             return value
         except ValueError:
             print("Invalid input. Please enter a valid number.")
- 
- 
+
 def add_product(inventory, transactions):
     print("\nAdd New Product")
     product_id = input("Product ID: ").strip()
@@ -48,8 +48,8 @@ def add_product(inventory, transactions):
     inventory.append({"id": product_id, "name": name, "price": price, "stock": stock})
     record_transaction(transactions, "add", product_id, price * stock)
     print("\nProduct added successfully!")
- 
- 
+
+
 def update_stock(inventory, transactions):
     print("\nUpdate Stock")
     product = find_product(inventory, input("Enter Product ID: ").strip())
@@ -62,8 +62,8 @@ def update_stock(inventory, transactions):
     product["stock"] = new_stock
     record_transaction(transactions, "update", product["id"], change * product["price"])
     print("\nStock updated successfully!")
- 
- 
+
+
 def search_product(inventory):
     print("\nSearch Product")
     product = find_product(inventory, input("Enter Product ID: ").strip())
@@ -75,8 +75,8 @@ def search_product(inventory):
     print(f"ID: {product['id']}\nName: {product['name']}\n"
           f"Price: ${product['price']:.2f}\nStock: {product['stock']}")
     print("-" * 48)
- 
- 
+
+
 def display_all(inventory):
     print("\nCurrent Inventory")
     print("-" * 48)
@@ -86,8 +86,7 @@ def display_all(inventory):
         print(f"ID: {p['id']} | Name: {p['name']} | "
               f"Price: ${p['price']:.2f} | Stock: {p['stock']}")
     print("-" * 48)
- 
- 
+
 def show_menu():
     print("\n----------- MENU -----------")
     print("1. Display All Products")
@@ -96,8 +95,8 @@ def show_menu():
     print("4. Search Product")
     print("5. Exit")
     print("----------------------------")
- 
- 
+
+
 def main():
     print("=" * 42)
     print("INVENTORY MANAGEMENT SYSTEM (Phase 1)")
@@ -118,7 +117,7 @@ def main():
             break
         else:
             print("Invalid option. Please choose 1-5.")
- 
- 
+
+
 if __name__ == "__main__":
     main()
