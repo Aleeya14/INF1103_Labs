@@ -27,7 +27,7 @@ class Product:
 
     def display_information(self):
         print(f"ID: {self.__product_id} | Name: {self.__name} | "
-              f"Price: ${self.__price:.2f} | Stock: {self.__stock}")
+              f"Price: ${self.__price:.2f} | Stock: {self.__stock}", end="")
  
     def to_dict(self):
         """Used by file handling to save this product."""
