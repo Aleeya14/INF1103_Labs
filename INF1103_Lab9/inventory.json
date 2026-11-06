@@ -1,0 +1,16 @@
+{
+    "products": [
+        {
+            "id": "P004",
+            "name": "Monitor",
+            "price": 299.99,
+            "stock": 10
+        },
+        {
+            "id": "P001",
+            "name": "Mouse",
+            "price": 9.99,
+            "stock": 5
+        }
+    ]
+}
