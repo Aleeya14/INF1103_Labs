@@ -2,7 +2,8 @@ import json
 import os
 
 from inventory import Inventory
-from product import PhysicalProduct, DigitalProduct
+from physical_product import PhysicalProduct
+from digital_product import DigitalProduct
 
 FILENAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inventory.json")
 
@@ -25,7 +26,7 @@ def load_inventory(filename=FILENAME):
                         item["id"], item["name"], item["price"], item["stock"], item["download_size"]
                     )
                 else:
-                    continue  # Skip unknown types
+                    continue
                 inventory.add_product(product)
             print("Inventory loaded successfully.")
         except (json.JSONDecodeError, OSError, KeyError, TypeError):
