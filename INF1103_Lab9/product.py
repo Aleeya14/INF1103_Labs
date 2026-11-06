@@ -56,7 +56,6 @@ class DigitalProduct(Product):
     """Represents a digital product with an added download size attribute."""
 
     def __init__(self, product_id, name, price, stock, download_size):
-        # Reuse the parent constructor
         super().__init__(product_id, name, price, stock)
         self.__download_size = download_size
 
@@ -70,10 +69,16 @@ class DigitalProduct(Product):
               f"Download Size: {self.__download_size} MB")
               
 if __name__ == "__main__":
+    print("--- Testing Base Product ---")
     product = Product("P001", "Laptop", 1200.00, 15)
     product.display_information()
     product.update_stock(50)
     product.display_information()
 
+    print("\n--- Testing Physical Product ---")
+    physical_product = PhysicalProduct("P002", "Mechanical Keyboard", 150.00, 30, 1.2)
+    physical_product.display_information()
 
- 
+    print("\n--- Testing Digital Product ---")
+    digital_product = DigitalProduct("D001", "Python Masterclass E-Book", 29.99, 100, 45.5)
+    digital_product.display_information()
