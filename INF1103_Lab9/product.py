@@ -1,13 +1,5 @@
 from abc import ABC, abstractmethod
 
-class CanBeShipped(ABC):
-    """Interface-style abstract base class for shippable items."""
-
-    @abstractmethod
-    def calculate_shipping_cost(self):
-        """Contract method to calculate and return the shipping cost."""
-        pass
-
 class Product(ABC):
     """Represents and manages ONE product (Abstract Base Class)."""
 
@@ -39,72 +31,10 @@ class Product(ABC):
         print(f"ID: {self.__product_id} | Name: {self.__name} | "
               f"Price: ${self.__price:.2f} | Stock: {self.__stock}", end="")
  
+    @abstractmethod
     def to_dict(self):
-        """Used by file handling to save this product."""
-        return {"id": self.__product_id, "name": self.__name,
-                "price": self.__price, "stock": self.__stock}
+        pass
 
     @abstractmethod
     def get_fulfilment_info(self):
-        """Abstract method that must be implemented by subclasses."""
         pass
-
-class PhysicalProduct(Product, CanBeShipped):
-    """Represents a physical product, inheriting from Product and implementing CanBeShipped."""
-
-    def __init__(self, product_id, name, price, stock, weight):
-        super().__init__(product_id, name, price, stock)
-        self.__weight = weight
-
-    def get_weight(self):
-        return self.__weight
-
-    def display_information(self):
-        """Reuses parent display behavior and appends physical-specific info."""
-        super().display_information()
-        print(f" | Weight: {self.__weight} kg")
-
-    def get_fulfilment_info(self):
-        return "This product requires physical shipping via courier."
-
-    def calculate_shipping_cost(self):
-        """Calculates shipping cost based on weight (e.g., $5.00 base + $3.00 per kg)."""
-        base_fee = 5.00
-        rate_per_kg = 3.00
-        return base_fee + (self.__weight * rate_per_kg)
-
-class DigitalProduct(Product):
-    """Represents a digital product with an added download size attribute."""
-
-    def __init__(self, product_id, name, price, stock, download_size):
-        super().__init__(product_id, name, price, stock)
-        self.__download_size = download_size
-
-    def get_download_size(self):
-        return self.__download_size
-
-    def display_information(self):
-        """Reuses parent display behavior and appends digital-specific info."""
-        super().display_information()
-        print(f" | Download Size: {self.__download_size} MB")
-
-    def get_fulfilment_info(self):
-        """Fulfills the abstract method requirement for digital products."""
-        return "This product is delivered digitally via email/download link."
-
-if __name__ == "__main__":
-    print("--- Testing Physical Products with Shipping Costs ---")
-    keyboard = PhysicalProduct("P002", "Mechanical Keyboard", 150.00, 30, 1.2)
-    keyboard.display_information()
-    print(f"Fulfilment: {keyboard.get_fulfilment_info()}")
-    print(f"Shipping cost: ${keyboard.calculate_shipping_cost():.2f}\n")
-
-    monitor = PhysicalProduct("P003", "27-inch Monitor", 300.00, 10, 5.5)
-    monitor.display_information()
-    print(f"Fulfilment: {monitor.get_fulfilment_info()}")
-    print(f"Shipping cost: ${monitor.calculate_shipping_cost():.2f}\n")
-
-    print("--- Testing Digital Product (No Shipping Interface) ---")
-    digital_item = DigitalProduct("D001", "Python Masterclass E-Book", 29.99, 100, 45.5)
-    digital_item.display_information()
-    print(f"Fulfilment: {digital_item.get_fulfilment_info()}")
