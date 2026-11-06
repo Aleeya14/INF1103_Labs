@@ -1,7 +1,8 @@
 import os
 
 from file_handling import FILENAME, load_inventory, save_inventory
-from product import PhysicalProduct, DigitalProduct
+from physical_product import PhysicalProduct
+from digital_product import DigitalProduct
 
 def read_number(prompt, cast):
     while True:
@@ -74,8 +75,6 @@ def search_product_menu(inventory):
     print("-" * 52)
     product.display_information()
     print(f"Fulfilment Info: {product.get_fulfilment_info()}")
-    
-    # If it implements the CanBeShipped interface, display shipping cost
     if hasattr(product, "calculate_shipping_cost"):
         print(f"Shipping Cost: ${product.calculate_shipping_cost():.2f}")
     print("-" * 52)
