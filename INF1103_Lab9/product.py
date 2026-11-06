@@ -33,10 +33,29 @@ class Product:
         """Used by file handling to save this product."""
         return {"id": self.__product_id, "name": self.__name,
                 "price": self.__price, "stock": self.__stock}
+    
+class PhysicalProduct(Product):
+    """Represents a physical product with an added weight attribute."""
 
+    def __init__(self, product_id, name, price, stock, weight):
+        # Reuse the parent constructor
+        super().__init__(product_id, name, price, stock)
+        self.__weight = weight
+
+    def get_weight(self):
+        return self.__weight
+
+    def display_information(self):
+        """Displays the product's existing information alongside its weight."""
+        print(f"ID: {self.get_product_id()} | Name: {self.get_name()} | "
+              f"Price: ${self.get_price():.2f} | Stock: {self.get_stock()} | "
+              f"Weight: {self.__weight} kg")
+              
 if __name__ == "__main__":
     product = Product("P001", "Laptop", 1200.00, 15)
     product.display_information()
     product.update_stock(50)
     product.display_information()
+
+
  
