@@ -1,5 +1,3 @@
-from product import Product
-
 class Inventory:
     """Manages a COLLECTION of Product objects (Single Responsibility)."""
 
@@ -36,12 +34,3 @@ class Inventory:
     def get_products(self):
         """Return a copy of the product list (used when saving)."""
         return list(self.__products)
-
-if __name__ == "__main__":
-    from product import PhysicalProduct, DigitalProduct
-    inventory = Inventory()
-    inventory.add_product(PhysicalProduct("P001", "Laptop", 1200.00, 15, 2.5))
-    inventory.add_product(DigitalProduct("D001", "Python E-Book", 29.99, 100, 45.0))
-    inventory.display_all()
-    found = inventory.search_product("P001")
-    print("\nSearch P001:", found.get_name() if found else "Not found")
