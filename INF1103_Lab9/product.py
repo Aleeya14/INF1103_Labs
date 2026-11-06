@@ -38,7 +38,6 @@ class PhysicalProduct(Product):
     """Represents a physical product with an added weight attribute."""
 
     def __init__(self, product_id, name, price, stock, weight):
-        # Reuse the parent constructor
         super().__init__(product_id, name, price, stock)
         self.__weight = weight
 
@@ -46,10 +45,9 @@ class PhysicalProduct(Product):
         return self.__weight
 
     def display_information(self):
-        """Displays the product's existing information alongside its weight."""
-        print(f"ID: {self.get_product_id()} | Name: {self.get_name()} | "
-              f"Price: ${self.get_price():.2f} | Stock: {self.get_stock()} | "
-              f"Weight: {self.__weight} kg")
+        """Reuses parent display behavior and appends physical-specific info."""
+        super().display_information()
+        print(f" | Weight: {self.__weight} kg")
         
         
 class DigitalProduct(Product):
@@ -63,22 +61,15 @@ class DigitalProduct(Product):
         return self.__download_size
 
     def display_information(self):
-        """Displays the product's existing information alongside its download size."""
-        print(f"ID: {self.get_product_id()} | Name: {self.get_name()} | "
-              f"Price: ${self.get_price():.2f} | Stock: {self.get_stock()} | "
-              f"Download Size: {self.__download_size} MB")
+        """Reuses parent display behavior and appends digital-specific info."""
+        super().display_information()
+        print(f" | Download Size: {self.__download_size} MB")
               
 if __name__ == "__main__":
-    print("--- Testing Base Product ---")
-    product = Product("P001", "Laptop", 1200.00, 15)
-    product.display_information()
-    product.update_stock(50)
-    product.display_information()
-
-    print("\n--- Testing Physical Product ---")
-    physical_product = PhysicalProduct("P002", "Mechanical Keyboard", 150.00, 30, 1.2)
-    physical_product.display_information()
+    print("--- Testing Physical Product ---")
+    physical_item = PhysicalProduct("P002", "Mechanical Keyboard", 150.00, 30, 1.2)
+    physical_item.display_information()
 
     print("\n--- Testing Digital Product ---")
-    digital_product = DigitalProduct("D001", "Python Masterclass E-Book", 29.99, 100, 45.5)
-    digital_product.display_information()
+    digital_item = DigitalProduct("D001", "Python Masterclass E-Book", 29.99, 100, 45.5)
+    digital_item.display_information()
