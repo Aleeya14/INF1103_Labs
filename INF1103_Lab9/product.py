@@ -7,7 +7,7 @@ class CanBeShipped(ABC):
     def calculate_shipping_cost(self):
         """Contract method to calculate and return the shipping cost."""
         pass
-    
+
 class Product(ABC):
     """Represents and manages ONE product (Abstract Base Class)."""
 
@@ -49,8 +49,8 @@ class Product(ABC):
         """Abstract method that must be implemented by subclasses."""
         pass
 
-class PhysicalProduct(Product):
-    """Represents a physical product with an added weight attribute."""
+class PhysicalProduct(Product, CanBeShipped):
+    """Represents a physical product, inheriting from Product and implementing CanBeShipped."""
 
     def __init__(self, product_id, name, price, stock, weight):
         super().__init__(product_id, name, price, stock)
@@ -65,8 +65,13 @@ class PhysicalProduct(Product):
         print(f" | Weight: {self.__weight} kg")
 
     def get_fulfilment_info(self):
-        """Fulfills the abstract method requirement for physical products."""
         return "This product requires physical shipping via courier."
+
+    def calculate_shipping_cost(self):
+        """Calculates shipping cost based on weight (e.g., $5.00 base + $3.00 per kg)."""
+        base_fee = 5.00
+        rate_per_kg = 3.00
+        return base_fee + (self.__weight * rate_per_kg)
 
 class DigitalProduct(Product):
     """Represents a digital product with an added download size attribute."""
@@ -88,19 +93,18 @@ class DigitalProduct(Product):
         return "This product is delivered digitally via email/download link."
 
 if __name__ == "__main__":
+    print("--- Testing Physical Products with Shipping Costs ---")
+    keyboard = PhysicalProduct("P002", "Mechanical Keyboard", 150.00, 30, 1.2)
+    keyboard.display_information()
+    print(f"Fulfilment: {keyboard.get_fulfilment_info()}")
+    print(f"Shipping cost: ${keyboard.calculate_shipping_cost():.2f}\n")
 
-    try:
-        print("--- Attempting to instantiate abstract Product class ---")
-        abstract_product = Product("P999", "Generic Item", 10.00, 5)
-    except TypeError as e:
-        print(f"Caught expected error: {e}\n")
+    monitor = PhysicalProduct("P003", "27-inch Monitor", 300.00, 10, 5.5)
+    monitor.display_information()
+    print(f"Fulfilment: {monitor.get_fulfilment_info()}")
+    print(f"Shipping cost: ${monitor.calculate_shipping_cost():.2f}\n")
 
-    print("--- Testing Physical Product ---")
-    physical_item = PhysicalProduct("P002", "Mechanical Keyboard", 150.00, 30, 1.2)
-    physical_item.display_information()
-    print(f"Fulfilment: {physical_item.get_fulfilment_info()}")
-
-    print("\n--- Testing Digital Product ---")
+    print("--- Testing Digital Product (No Shipping Interface) ---")
     digital_item = DigitalProduct("D001", "Python Masterclass E-Book", 29.99, 100, 45.5)
     digital_item.display_information()
     print(f"Fulfilment: {digital_item.get_fulfilment_info()}")
