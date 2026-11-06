@@ -1,5 +1,13 @@
 from abc import ABC, abstractmethod
 
+class CanBeShipped(ABC):
+    """Interface-style abstract base class for shippable items."""
+
+    @abstractmethod
+    def calculate_shipping_cost(self):
+        """Contract method to calculate and return the shipping cost."""
+        pass
+    
 class Product(ABC):
     """Represents and manages ONE product (Abstract Base Class)."""
 
