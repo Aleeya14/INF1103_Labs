@@ -1,8 +1,7 @@
 import os
 
 from file_handling import FILENAME, load_inventory, save_inventory
-from product import Product
-
+from product import PhysicalProduct, DigitalProduct
 
 def read_number(prompt, cast):
     while True:
@@ -15,7 +14,6 @@ def read_number(prompt, cast):
         except ValueError:
             print("Invalid input. Please enter a valid number.")
 
-
 def show_menu():
     print("\n----------- MENU -----------")
     print("1. Display All Products")
@@ -26,19 +24,34 @@ def show_menu():
     print("6. Exit")
     print("----------------------------")
 
-
 def add_product_menu(inventory):
     print("\nAdd New Product")
     product_id = input("Product ID: ").strip()
     if inventory.search_product(product_id):
         print("Product ID already exists.")
         return
+        
     name = input("Product Name: ").strip()
     price = read_number("Price: ", float)
     stock = read_number("Stock Quantity: ", int)
-    inventory.add_product(Product(product_id, name, price, stock))
-    print("\nProduct added successfully!")
 
+    print("\nSelect Product Type:")
+    print("1. Physical Product")
+    print("2. Digital Product")
+    type_choice = input("Enter choice (1-2): ").strip()
+
+    if type_choice == "1":
+        weight = read_number("Weight (kg): ", float)
+        product = PhysicalProduct(product_id, name, price, stock, weight)
+    elif type_choice == "2":
+        download_size = read_number("Download Size (MB): ", float)
+        product = DigitalProduct(product_id, name, price, stock, download_size)
+    else:
+        print("Invalid product type choice. Product creation cancelled.")
+        return
+
+    inventory.add_product(product)
+    print("\nProduct added successfully!")
 
 def update_stock_menu(inventory):
     print("\nUpdate Stock")
@@ -50,19 +63,22 @@ def update_stock_menu(inventory):
     product.update_stock(read_number("\nNew Stock Quantity: ", int))
     print("\nStock updated successfully!")
 
-
 def search_product_menu(inventory):
     print("\nSearch Product")
     product = inventory.search_product(input("Enter Product ID: ").strip())
     if not product:
         print("\nProduct not found.")
         return
+        
     print("\nProduct Found")
-    print("-" * 48)
-    print(f"ID: {product.get_product_id()}\nName: {product.get_name()}\n"
-          f"Price: ${product.get_price():.2f}\nStock: {product.get_stock()}")
-    print("-" * 48)
-
+    print("-" * 52)
+    product.display_information()
+    print(f"Fulfilment Info: {product.get_fulfilment_info()}")
+    
+    # If it implements the CanBeShipped interface, display shipping cost
+    if hasattr(product, "calculate_shipping_cost"):
+        print(f"Shipping Cost: ${product.calculate_shipping_cost():.2f}")
+    print("-" * 52)
 
 def main():
     print("=" * 42)
@@ -94,7 +110,6 @@ def main():
             break
         else:
             print("Invalid option. Please choose 1-6.")
-
 
 if __name__ == "__main__":
     try:
