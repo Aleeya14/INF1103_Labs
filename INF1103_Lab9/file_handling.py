@@ -2,7 +2,7 @@ import json
 import os
 
 from inventory import Inventory
-from product import Product
+from product import PhysicalProduct, DigitalProduct
 
 FILENAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inventory.json")
 
@@ -15,7 +15,17 @@ def load_inventory(filename=FILENAME):
             with open(filename, "r", encoding="utf-8-sig") as f:
                 data = json.load(f)
             for item in data.get("products", []):
-                product = Product(item["id"], item["name"], item["price"], item["stock"])
+                prod_type = item.get("type")
+                if prod_type == "physical":
+                    product = PhysicalProduct(
+                        item["id"], item["name"], item["price"], item["stock"], item["weight"]
+                    )
+                elif prod_type == "digital":
+                    product = DigitalProduct(
+                        item["id"], item["name"], item["price"], item["stock"], item["download_size"]
+                    )
+                else:
+                    continue  # Skip unknown types
                 inventory.add_product(product)
             print("Inventory loaded successfully.")
         except (json.JSONDecodeError, OSError, KeyError, TypeError):
@@ -26,7 +36,7 @@ def load_inventory(filename=FILENAME):
     return inventory
 
 def save_inventory(inventory, filename=FILENAME):
-    """Save all products in the Inventory to JSON."""
+    """Save all products in the Inventory to JSON preserving their types."""
     try:
         os.makedirs(os.path.dirname(filename) or ".", exist_ok=True)
         data = {"products": [p.to_dict() for p in inventory.get_products()]}
