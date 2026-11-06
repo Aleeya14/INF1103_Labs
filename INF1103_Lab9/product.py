@@ -50,6 +50,24 @@ class PhysicalProduct(Product):
         print(f"ID: {self.get_product_id()} | Name: {self.get_name()} | "
               f"Price: ${self.get_price():.2f} | Stock: {self.get_stock()} | "
               f"Weight: {self.__weight} kg")
+        
+        
+class DigitalProduct(Product):
+    """Represents a digital product with an added download size attribute."""
+
+    def __init__(self, product_id, name, price, stock, download_size):
+        # Reuse the parent constructor
+        super().__init__(product_id, name, price, stock)
+        self.__download_size = download_size
+
+    def get_download_size(self):
+        return self.__download_size
+
+    def display_information(self):
+        """Displays the product's existing information alongside its download size."""
+        print(f"ID: {self.get_product_id()} | Name: {self.get_name()} | "
+              f"Price: ${self.get_price():.2f} | Stock: {self.get_stock()} | "
+              f"Download Size: {self.__download_size} MB")
               
 if __name__ == "__main__":
     product = Product("P001", "Laptop", 1200.00, 15)
