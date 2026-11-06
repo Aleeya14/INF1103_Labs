@@ -1,5 +1,7 @@
-class Product:
-    """Represents and manages ONE product (Single Responsibility)."""
+from abc import ABC, abstractmethod
+
+class Product(ABC):
+    """Represents and manages ONE product (Abstract Base Class)."""
 
     def __init__(self, product_id, name, price, stock):
         self.__product_id = product_id
@@ -33,7 +35,12 @@ class Product:
         """Used by file handling to save this product."""
         return {"id": self.__product_id, "name": self.__name,
                 "price": self.__price, "stock": self.__stock}
-    
+
+    @abstractmethod
+    def get_fulfilment_info(self):
+        """Abstract method that must be implemented by subclasses."""
+        pass
+
 class PhysicalProduct(Product):
     """Represents a physical product with an added weight attribute."""
 
@@ -48,8 +55,11 @@ class PhysicalProduct(Product):
         """Reuses parent display behavior and appends physical-specific info."""
         super().display_information()
         print(f" | Weight: {self.__weight} kg")
-        
-        
+
+    def get_fulfilment_info(self):
+        """Fulfills the abstract method requirement for physical products."""
+        return "This product requires physical shipping via courier."
+
 class DigitalProduct(Product):
     """Represents a digital product with an added download size attribute."""
 
@@ -64,12 +74,25 @@ class DigitalProduct(Product):
         """Reuses parent display behavior and appends digital-specific info."""
         super().display_information()
         print(f" | Download Size: {self.__download_size} MB")
-              
+
+    def get_fulfilment_info(self):
+        """Fulfills the abstract method requirement for digital products."""
+        return "This product is delivered digitally via email/download link."
+
 if __name__ == "__main__":
+
+    try:
+        print("--- Attempting to instantiate abstract Product class ---")
+        abstract_product = Product("P999", "Generic Item", 10.00, 5)
+    except TypeError as e:
+        print(f"Caught expected error: {e}\n")
+
     print("--- Testing Physical Product ---")
     physical_item = PhysicalProduct("P002", "Mechanical Keyboard", 150.00, 30, 1.2)
     physical_item.display_information()
+    print(f"Fulfilment: {physical_item.get_fulfilment_info()}")
 
     print("\n--- Testing Digital Product ---")
     digital_item = DigitalProduct("D001", "Python Masterclass E-Book", 29.99, 100, 45.5)
     digital_item.display_information()
+    print(f"Fulfilment: {digital_item.get_fulfilment_info()}")
